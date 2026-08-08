@@ -7,6 +7,58 @@
 
 ## ER図
 
+````mermaid
+ erDiagram
+    users{
+        bigint id pk
+        varcher name
+        varcher email
+        timestamp email_verified_at
+        varcher password
+        varcher remember_token
+        timestamp created_at
+        timestamp updated_at
+    }
+    categories{
+        bigint id pk
+        varcher content
+        timestamp created_at
+        timestamp updated_at
+    }
+    contacts{
+        bigint id pk
+        bigint category_id fk
+        varcher first_name
+        varcher last_name
+        tinyint gender
+        varcher email
+        varcher tel
+        varcher address
+        varcher building
+        varcher detail
+        timestamp created_at
+        timestamp updated_at
+    }
+    tags{
+        bigint id pk
+        varcher name
+        timestamp created_at
+        timestamp updated_at
+    }
+    contact_tags{
+        bigint id pk
+        bigint contact_id fk
+        bigint tag_id fk
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    categories ||--o{contacts:has
+    contacts ||--o{contact_tags:has
+    tags ||--o{contact_tags:has
+
+```
+
 ## 環境構築手順
 
 1.Laravel 10.xを指定してプロジェクトを作成
@@ -19,7 +71,7 @@ docker run --rm \
  -e COMPOSER_CACHE_DIR=/tmp/composer_cache \
  laravelsail/php82-composer:latest \
  composer create-project laravel/laravel:^10.0 contact-form-app
-```
+````
 
 2.プロジェクトディレクトリに移動
 
