@@ -7,7 +7,7 @@
 
 ## ER図
 
-````mermaid
+```mermaid
  erDiagram
     users{
         bigint id pk
@@ -71,7 +71,7 @@ docker run --rm \
  -e COMPOSER_CACHE_DIR=/tmp/composer_cache \
  laravelsail/php82-composer:latest \
  composer create-project laravel/laravel:^10.0 contact-form-app
-````
+```
 
 2.プロジェクトディレクトリに移動
 
