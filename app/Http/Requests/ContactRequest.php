@@ -38,10 +38,11 @@ class ContactRequest extends FormRequest
             'first_name' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'in:1,2,3'],
             'email' => ['required', 'email', 'max:255'],
-            'tel' => ['required', 'numeric', 'digits_between:10,11'],
+            'tel' => ['required', 'string', 'regex:/^[0-9]{10,11}$/'],
             'address' => ['required', 'string', 'max:255'],
             'building' => ['nullable', 'string', 'max:255'],
             'category_id' => ['required', 'exists:categories,id'],
+            'tag_ids' => ['nullable', 'array'],
             'detail' => ['required', 'string', 'max:120'],
         ];
     }
@@ -55,8 +56,7 @@ class ContactRequest extends FormRequest
             'email.required' => 'メールアドレスを入力してください',
             'email.email' => 'メールアドレスはメール形式で入力してください',
             'tel.required' => '電話番号を入力してください',
-            'tel.numeric' => '電話番号は数値で入力してください',
-            'tel.digits_between' => '電話番号は10桁または11桁で入力してください',
+            'tel.regex' => '電話番号を正しく入力してください',
             'address.required' => '住所を入力してください',
             'category_id.required' => 'お問い合わせの種類を選択してください',
             'detail.required' => 'お問い合わせ内容を入力してください',
