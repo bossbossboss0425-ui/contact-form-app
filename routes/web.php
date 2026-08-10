@@ -18,3 +18,10 @@ Route::get('/', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contacts/confirm', [ContactController::class, 'confirm'])->name('contact.confirm');
 Route::post('contacts', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/thanks', [ContactController::class, 'thanks'])->name('contact.thanks');
+
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', function () {
+        return '管理者登録・ログイン成功！';
+        // ※のちに [AdminContactController::class, 'index'] などに変更します
+    })->name('dashboard');
+});
