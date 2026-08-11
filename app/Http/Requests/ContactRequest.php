@@ -19,11 +19,10 @@ class ContactRequest extends FormRequest
     {
         if ($this->filled(['tel1', 'tel2', 'tel3'])) {
             $this->merge([
-                'tel' => $this->tel1 . $this->tel2 . $this->tel3,
+                'tel' => $this->tel1.$this->tel2.$this->tel3,
             ]);
         }
     }
-
 
     /**
      * Get the validation rules that apply to the request.
