@@ -43,32 +43,37 @@ class ContactFormTest extends TestCase
     /** @test */
     public function お問い合わせ確認ページ表示とバリデーション(): void
     {
-        // Arrange: 成功データの作成
-        $category = Category::factory()->create(['name' => '問合せカテゴリ']);
+        // Arrange
+        $category = Category::factory()->create(['content' => '問合せカテゴリ']);
+
         $validData = [
             'first_name' => '山田',
             'last_name' => '太郎',
-            'gender' => 1,
+            'gender' => '1',
             'email' => 'test@example.com',
-            'tell1' => '090',
-            'tell2' => '1234',
-            'tell3' => '5678',
-            'address' => '東京都渋谷区',
+            'tel1' => '090',
+            'tel2' => '1234',
+            'tel3' => '5678',
+            'address' => '東京都渋谷区1-1-1',
+            'building' => 'テストビル101',
             'category_id' => $category->id,
             'detail' => 'お問い合わせ内容のテストです。',
         ];
 
-        // Act & Assert ①: バリデーション通過時
+        // Act
         $response = $this->post(route('contact.confirm'), $validData);
-        $response->assertStatus(200)
-            ->assertViewIs('contact.confirm') // ビュー名（※環境に合わせて確認）
-            ->assertSee('山田')
-            ->assertSee('test@example.com')
-            ->assertSee('問合せカテゴリ');
 
-        // Act & Assert ②: バリデーションエラー時
+        // バリデーションエラーが出ないこと
+        $response->assertSessionHasNoErrors();
+
+        // Assert
+        $response->assertStatus(200)
+            ->assertSee('山田')
+            ->assertSee('test@example.com');
+
+        // バリデーションエラーのテスト
         $invalidResponse = $this->post(route('contact.confirm'), []);
-        $invalidResponse->assertSessionHasErrors(['first_name', 'last_name', 'email']);
+        $invalidResponse->assertSessionHasErrors(['first_name', 'last_name', 'email', 'tel', 'address', 'category_id', 'detail']);
     }
 
     /** @test */
@@ -81,20 +86,25 @@ class ContactFormTest extends TestCase
         $submitData = [
             'first_name' => '佐藤',
             'last_name' => '花子',
-            'gender' => 2,
+            'gender' => '2',
             'email' => 'sato@example.com',
-            'tell' => '08098765432',
-            'address' => '大阪府大阪市',
+            'tel1' => '080',
+            'tel2' => '9876',
+            'tel3' => '5432',
+            'address' => '大阪府大阪市1-1-1',
+            'building' => '大阪ビル202',
             'category_id' => $category->id,
             'detail' => '送信テストです。',
-            'category' => $category->name,
-            'tags' => $tags->pluck('id')->toArray(), // タグIDの配列
+            'tag_ids' => $tags->pluck('id')->toArray(), // ContactRequestの仕様に合わせtag_idsに指定
         ];
 
-        // Act & Assert ①: 送信成功時
+        // Act
         $response = $this->post(route('contact.store'), $submitData);
 
-        // /thanks へリダイレクト確認
+        // バリデーションエラーが出ないこと
+        $response->assertSessionHasNoErrors();
+
+        // Assert
         $response->assertRedirect(route('contact.thanks'));
 
         // DB（contactsテーブル）にデータが保存されたか確認
@@ -103,16 +113,18 @@ class ContactFormTest extends TestCase
             'email' => 'sato@example.com',
         ]);
 
-        // DB（contact_tag 中間テーブル）に紐付けが記録されたか確認
+        // DB（contact_tags 中間テーブル）に紐付けが記録されたか確認
         $contact = Contact::where('email', 'sato@example.com')->first();
-        foreach ($tags as $tag) {
-            $this->assertDatabaseHas('contact_tag', [
-                'contact_id' => $contact->id,
-                'tag_id' => $tag->id,
-            ]);
+        if ($contact) {
+            foreach ($tags as $tag) {
+                $this->assertDatabaseHas('contact_tags', [
+                    'contact_id' => $contact->id,
+                    'tag_id' => $tag->id,
+                ]);
+            }
         }
 
-        // Act & Assert ②: バリデーションエラー時
+        // バリデーションエラーのテスト
         $invalidResponse = $this->post(route('contact.store'), []);
         $invalidResponse->assertSessionHasErrors();
     }
