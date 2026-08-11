@@ -8,49 +8,49 @@
 ## ER図
 
 ```mermaid
- erDiagram
+erDiagram
     users{
-        bigint id pk
-        varcher name
-        varcher email
-        timestamp email_verified_at
-        varcher password
-        varcher remember_token
-        timestamp created_at
-        timestamp updated_at
+        id bigint pk
+        name varcher
+        email varcher
+        email_verified_at timestamp
+        password varcher
+        remember_token varcher
+        created_at timestamp
+        updated_at timestamp
     }
     categories{
-        bigint id pk
-        varcher content
-        timestamp created_at
-        timestamp updated_at
+        id bigint pk
+        content varcher
+        created_at timestamp
+        updated_at timestamp
     }
     contacts{
-        bigint id pk
-        bigint category_id fk
-        varcher first_name
-        varcher last_name
-        tinyint gender
-        varcher email
-        varcher tel
-        varcher address
-        varcher building
-        varcher detail
-        timestamp created_at
-        timestamp updated_at
+        id bigint pk
+        category_id bigint fk
+        first_name varcher
+        last_name varcher
+        gender tinyint
+        email varcher
+        tel varcher
+        address varcher
+        building varcher
+        detail varcher
+        created_at timestamp
+        updated_at timestamp
     }
     tags{
-        bigint id pk
-        varcher name
-        timestamp created_at
-        timestamp updated_at
+        id bigint pk
+        name varcher
+        created_at timestamp
+        updated_at timestamp
     }
     contact_tags{
-        bigint id pk
-        bigint contact_id fk
-        bigint tag_id fk
-        timestamp created_at
-        timestamp updated_at
+        id bigint pk
+        contact_id bigint fk
+        tag_id bigint fk
+        created_at timestamp
+        updated_at timestamp
     }
 
     categories ||--o{contacts:has

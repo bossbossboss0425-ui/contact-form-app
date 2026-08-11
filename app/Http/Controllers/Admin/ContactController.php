@@ -23,8 +23,8 @@ class ContactController extends Controller
             $keyword = $request->input('keyword');
             $query->where(function ($q) use ($keyword) {
                 $q->where('first_name', 'LIKE', "%{$keyword}%")
-                    ->orwhere('last_name', 'LIKE', "%{$keyword}%")
-                    ->orwhere('email', 'LIKE', "%{$keyword}%");
+                    ->orWhere('last_name', 'LIKE', "%{$keyword}%")
+                    ->orWhere('email', 'LIKE', "%{$keyword}%");
             });
         }
 
@@ -40,7 +40,7 @@ class ContactController extends Controller
 
         // 日付検索
         if ($request->filled('date')) {
-            $query->wheredate('created_at', $request->input('date'));
+            $query->whereDate('created_at', $request->input('date'));
         }
 
         // 1ページあたり7件取得

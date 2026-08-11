@@ -15,16 +15,15 @@ class ContactRequest extends FormRequest
         return true;
     }
 
-    // バリデーション前のデータ整形（tel1, tel2, tel3 を合体）
     protected function prepareForValidation()
     {
-        // tel1, tel2, tel3 が入っていれば結合して 'tel' としてリクエストに追加する
-        if ($this->filled('tel1') || $this->filled('tel2') || $this->filled('tel3')) {
+        if ($this->filled(['tel1', 'tel2', 'tel3'])) {
             $this->merge([
-                'tel' => $this->tel1.$this->tel2.$this->tel3,
+                'tel' => $this->tel1 . $this->tel2 . $this->tel3,
             ]);
         }
     }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -50,8 +49,8 @@ class ContactRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'first_name.required' => '姓を入力してください',
-            'last_name.required' => '名を入力してください',
+            'first_name.required' => '名を入力してください',
+            'last_name.required' => '姓を入力してください',
             'gender.required' => '性別を選択してください',
             'email.required' => 'メールアドレスを入力してください',
             'email.email' => 'メールアドレスはメール形式で入力してください',
