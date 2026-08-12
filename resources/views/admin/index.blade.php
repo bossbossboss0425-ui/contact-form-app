@@ -57,7 +57,7 @@
                         </a>
                     </div>
                     <div>
-                        <a href="/contacts/export?{{ http_build_query(request()->query()) }}"
+                        <a href="/admin/contacts/export?{{ http_build_query(request()->query()) }}"
                             class="px-6 py-2 bg-amber-600 text-white rounded hover:bg-amber-700 inline-block">
                             エクスポート
                         </a>
@@ -86,7 +86,8 @@
                         @forelse ($contacts as $contact)
                             <tr>
                                 <td class="px-6 py-4 text-sm text-gray-700">{{ $contact->last_name }}
-                                    {{ $contact->first_name }}</td>
+                                    {{ $contact->first_name }}
+                                </td>
                                 <td class="px-6 py-4 text-sm text-gray-700">
                                     @php
                                         $genderLabels = [1 => '男性', 2 => '女性', 3 => 'その他'];
