@@ -19,8 +19,7 @@ class ContactFactory extends Factory
     public function definition(): array
     {
         return [
-            // 既存の categories からランダムに選択し、category_id を付与
-            'category_id' => Category::inRandomOrder()->first()->id,
+            'category_id' => Category::factory(),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'gender' => $this->faker->numberBetween(1, 3),
