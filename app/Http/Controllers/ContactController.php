@@ -23,6 +23,8 @@ class ContactController extends Controller
     {
         $validated = $request->validated();
 
+        $request->flash();
+
         $category = Category::find($validated['category_id']);
         $tags = Tag::whereIn('id', $validated['tag_ids'] ?? [])->get();
 
