@@ -32,7 +32,7 @@ class Contact extends Model
     // お問い合わせは複数のタグを持つ
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class, 'contact_tags');
+        return $this->belongsToMany(Tag::class, 'contact_tag');
     }
 
     // 性別のラベルを取得するアクセサ

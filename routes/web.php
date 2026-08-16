@@ -20,13 +20,12 @@ Route::get('/', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contacts/confirm', [ContactController::class, 'confirm'])->name('contact.confirm');
 Route::post('/contacts', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/thanks', [ContactController::class, 'thanks'])->name('contact.thanks');
+// CSVエクスポート
+Route::get('/contacts/export', [AdminContactController::class, 'export'])->name('contact.export');
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     // 管理者公開トップ画面
     Route::get('/', [AdminContactController::class, 'index'])->name('index');
-
-    // CSVエクスポート
-    Route::get('/contacts/export', [AdminContactController::class, 'export'])->name('contact.export');
 
     // お問い合わせ詳細
     Route::get('/contacts/{contact}', [AdminContactController::class, 'show'])->name('contact.show');

@@ -11,31 +11,31 @@
 erDiagram
     users{
         id bigint pk
-        name varcher
-        email varcher
+        name varchar
+        email varchar
         email_verified_at timestamp
-        password varcher
-        remember_token varcher
+        password varchar
+        remember_token varchar
         created_at timestamp
         updated_at timestamp
     }
     categories{
         id bigint pk
-        content varcher
+        content varchar
         created_at timestamp
         updated_at timestamp
     }
     contacts{
         id bigint pk
         category_id bigint fk
-        first_name varcher
-        last_name varcher
+        first_name varchar
+        last_name varchar
         gender tinyint
-        email varcher
-        tel varcher
-        address varcher
-        building varcher
-        detail varcher
+        email varchar
+        tel varchar
+        address varchar
+        building varchar
+        detail varchar
         created_at timestamp
         updated_at timestamp
     }
@@ -59,27 +59,23 @@ erDiagram
 
 ```
 
+## 開発環境URL
+
+- Webアプリケーション（フロントエンド/管理者ページ）: `http://localhost`
+- phpMyAdmin（データベース管理Tool）: `http://localhost:8080`
+
 ## 環境構築手順
 
-1.Laravel 10.xを指定してプロジェクトを作成
+### 1. リポジトリのクローンと移動
 
 ```bash
-docker run --rm \
- -u "$(id -u):$(id -g)" \
- -v "$(pwd):/var/www/html" \
- -w /var/www/html \
- -e COMPOSER_CACHE_DIR=/tmp/composer_cache \
- laravelsail/php82-composer:latest \
- composer create-project laravel/laravel:^10.0 contact-form-app
+git clone <本リポジトリのURL>
+cd <プロジェクトフォルダ名>
 ```
 
-2.プロジェクトディレクトリに移動
+### 2. Composer依存パッケージのインストール
 
-```bash
-cd contact-form-app
-```
-
-3.Laravel Sailをインストール
+Dockerコンテナを利用して `vendor` ディレクトリを生成します。
 
 ```bash
 docker run --rm \
@@ -88,26 +84,20 @@ docker run --rm \
     -w /var/www/html \
     -e COMPOSER_CACHE_DIR=/tmp/composer_cache \
     laravelsail/php82-composer:latest \
-    composer require laravel/sail --dev
+    composer install
 ```
 
-4.Sailの設定ファイルをパブリッシュ（MySQLを選択）
+### 3. 環境変数の設定
+
+`.env.example` をコピーして `.env` ファイルを作成します。
 
 ```bash
-docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    -e COMPOSER_CACHE_DIR=/tmp/composer_cache \
-    laravelsail/php82-composer:latest \
-    php artisan sail:install --with=mysql
+cp .env.example .env
 ```
 
-5.env.ファイルの確認
+`.env` 内のデータベース接続設定が以下になっているか確認・編集します。
 
-- env.ファイルを開き、データベース接続情報が以下と一致していることを確認
-
-```bash
+```ini
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
@@ -116,108 +106,41 @@ DB_USERNAME=sail
 DB_PASSWORD=password
 ```
 
-6.phpMyAdminの追加
-
-- compose.yaml を開き、mysql サービスの後に以下の設定を追加
-
-```bash
- phpmyadmin:
-        image: 'phpmyadmin:latest'
-        ports:
-            - '${FORWARD_PHPMYADMIN_PORT:-8080}:80'
-        environment:
-            PMA_HOST: mysql
-            PMA_USER: '${DB_USERNAME}'
-            PMA_PASSWORD: '${DB_PASSWORD}'
-        networks:
-            - sail
-        depends_on:
-            - mysql
-```
-
-※必ずmysqlとタグを合わせること
-
-7.Sailをバックグラウンドで起動
+### 4. Sailコンテナの起動
 
 ```bash
 ./vendor/bin/sail up -d
 ```
 
-- エイリアスを設定して 'sail' だけでコマンドを実行できるようにする
+※必要に応じて `sail` エイリアスを設定しておくと便利です。
 
 ```bash
 echo "alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'" >> ~/.zshrc
-```
-
-- シェルを再起動するか、新しいターミナルを開いてエイリアスを有効にする
-
-```bash
 exec $SHELL
 ```
 
-8.アプリケーションキーの生成
+### 5. アプリケーションキーの生成
 
 ```bash
 sail artisan key:generate
 ```
 
-9.フロントエンドのセットアップ
+### 6. マイグレーションとシーディング
 
-- 1.NPM依存パッケージのインストール
+データベースのテーブル作成および初期データの投入を行います。
 
 ```bash
-sai npm install
+sail artisan migrate:fresh --seed
 ```
 
-※必ずSailコンテナが起動していること
-
-- 2.Tailwind CSSのインストール
+### 7. フロントエンドのセットアップとビルド
 
 ```bash
-sail npm install -D tailwindcss@^3.4.0 postcss autoprefixer
-sail npm install alpinejs
-```
-
-- 3.設定ファイルの生成
-
-```bash
-sail npx tailwindcss init -p
-```
-
-- 4.Tailwind CSSのテンプレートパス設定
-- tailwind.config.js を開き、以下のように設定
-
-```bash
-/** @type {import("tailwindcss").Config} */
-export default {
-  content: [
-    "./resources/**/*.blade.php",
-    "./resources/**/*.js",
-    "./resources/**/*.vue",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-```
-
-- 5.提供リポジトリのresourcesディレクトリと入れ替え
-  ①以下のリポジトリをクローン
-    ```bash
-    git clone https://github.com/coachtech-prepared-file/Preparedblade-ConfirmationTest-ContactForm.git
-    ```
-    ②explrer.exeでプロジェクトフォルダを開く
-    ③プロジェクトフォルダ内のresourcesフォルダを削除
-    ④クローンしたフォルダ内のresourcesフォルダを、プロジェクトフォルダ内にコピー
-- 6.Vite開発サーバーの起動
-  新しいターミナルを開き
-
-```bash
+sail npm install
 sail npm run dev
 ```
 
-※このターミナルは開いたままにしておく
+※ `sail npm run dev` を実行したターミナルは起動したままにしてください。
 
 ## 使用技術
 

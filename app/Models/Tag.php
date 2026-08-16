@@ -15,6 +15,6 @@ class Tag extends Model
     // タグは複数のお問い合わせを持つ（多対多）
     public function contacts(): BelongsToMany
     {
-        return $this->belongsToMany(Contact::class, 'contact_tags');
+        return $this->belongsToMany(Contact::class, 'contact_tag');
     }
 }

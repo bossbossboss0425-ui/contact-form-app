@@ -113,11 +113,11 @@ class ContactFormTest extends TestCase
             'email' => 'sato@example.com',
         ]);
 
-        // DB（contact_tags 中間テーブル）に紐付けが記録されたか確認
+        // DB（contact_tag 中間テーブル）に紐付けが記録されたか確認
         $contact = Contact::where('email', 'sato@example.com')->first();
         if ($contact) {
             foreach ($tags as $tag) {
-                $this->assertDatabaseHas('contact_tags', [
+                $this->assertDatabaseHas('contact_tag', [
                     'contact_id' => $contact->id,
                     'tag_id' => $tag->id,
                 ]);
